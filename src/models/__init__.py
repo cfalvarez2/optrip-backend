@@ -51,19 +51,26 @@ class Main(Document):
 class Company(BaseModel):
     id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
     name: str
+    category: str
 
+    @validator('category')
+    def category_match(cls, value):
+        if not value in ['flight', 'bus']:
+            raise ValueError('category must be in [flight, bus]')
+        return value
+    
 class City(BaseModel):
     id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
-    name: str 
+    name: str
 
 class RouteLeg(Main):
+    id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
     origin: City
     destination: City
     departure: datetime
     arrival: datetime
     travel_time: timedelta
     price: int
-    category: str
     company: Company
 
     @before_event(Insert)
@@ -72,17 +79,18 @@ class RouteLeg(Main):
         time = datetime.strptime(self.travel_time,"%H:%M:%S")
         self.travel_time = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
 
-    @validator('category')
-    def category_match(cls, value):
-        if not value in ['flight', 'bus']:
-            raise ValueError('category must be in [flight, bus]')
-        return value
-
 class Route(Main):
+    id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
     legs: List[RouteLeg]
 
-    def getTotalCost(self):
+    def getTotalPrice(self):
         return reduce(lambda a, b: a.price + b.price, self.legs)
     
     def getTotalTravelTime(self):
         return reduce(lambda a, b: a.travel_time + b.travel_time, self.legs)
+
+    def getDeparture(self):
+        return self.legs[0].departure if self.legs else None
+    
+    def getArrival(self):
+        return self.legs[-1].arrival if self.legs else None
