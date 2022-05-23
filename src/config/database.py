@@ -26,7 +26,11 @@ MONGO_ODM = {
 }
 
 MODELS = [
-    "src.models.complex_test.ComplexTest"
+    "src.models.complex_test.ComplexTest",
+    "src.models.Company"
+    "src.models.City"
+    "src.models.RouteLeg"
+    "src.models.Route",
 ]
 
 
