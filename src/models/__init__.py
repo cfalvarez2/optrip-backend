@@ -55,13 +55,6 @@ class Company(BaseModel):
 class City(BaseModel):
     id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
     name: str 
-    countryCode: str
-
-    @validator('countryCode')
-    def type_match(cls, value):
-        if not value in ['CL']:
-            raise ValueError('countryCode must be in [CL]')
-        return value
 
 class RouteLeg(Main):
     origin: City
@@ -70,13 +63,19 @@ class RouteLeg(Main):
     arrival: datetime
     travel_time: timedelta
     price: int
-    type: str
-    companyId: str
+    category: str
+    company: Company
 
-    @validator('type')
-    def type_match(cls, value):
+    @before_event(Insert)
+    def parse_travel_time(self):
+        # Travel Time should be passed as "%H:%M:%S". Assumption: Travel_time <= 24 hrs.
+        time = datetime.strptime(self.travel_time,"%H:%M:%S")
+        self.travel_time = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
+
+    @validator('category')
+    def category_match(cls, value):
         if not value in ['flight', 'bus']:
-            raise ValueError('type must be in [flight, bus]')
+            raise ValueError('category must be in [flight, bus]')
         return value
 
 class Route(Main):
