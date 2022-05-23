@@ -57,7 +57,13 @@ class City(BaseModel):
     name: str 
     countryCode: str
 
-class RouteLeg(BaseModel):
+    @validator('countryCode')
+    def type_match(cls, value):
+        if not value in ['CL']:
+            raise ValueError('countryCode must be in [CL]')
+        return value
+
+class RouteLeg(Main):
     origin: City
     destination: City
     departure: datetime
@@ -65,14 +71,13 @@ class RouteLeg(BaseModel):
     travel_time: timedelta
     price: int
     type: str
-    companyId: Company.id
+    companyId: str
 
     @validator('type')
     def type_match(cls, value):
         if not value in ['flight', 'bus']:
             raise ValueError('type must be in [flight, bus]')
         return value
-
 
 class Route(Main):
     legs: List[RouteLeg]
