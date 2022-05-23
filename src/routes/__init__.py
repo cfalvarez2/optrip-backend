@@ -1,7 +1,7 @@
 from urllib import response
-from fastapi import APIRouter, Request, status, Body
+from fastapi import APIRouter, Request, status, Body, HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import HTMLResponse, JSONResponse, HTTPException
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 from typing import List, Union
