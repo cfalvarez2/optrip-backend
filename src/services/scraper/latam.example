@@ -1,0 +1,21 @@
+from latam_scraper import LatamDate, LatamScraper
+from scraper import TripOptions
+
+
+ORIGIN = "SCL"
+DESTINATION = "CCP"
+
+DAY = 25
+MONTH = 5  # May
+YEAR = 2022
+
+
+if __name__ == "__main__":
+    latam_date = LatamDate(DAY, MONTH, YEAR)
+    options = TripOptions(ORIGIN, DESTINATION, latam_date)
+
+    latam_scraper = LatamScraper()
+    flights = latam_scraper.scrape(options)
+
+    print()
+    [print(flight) for flight in flights]
