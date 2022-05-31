@@ -25,8 +25,6 @@ def get_browser(wait=2):
 
     driver.implicitly_wait(wait)
 
-    print(f"Session id: {driver.session_id}")
-
     return driver
 
 
@@ -46,8 +44,8 @@ class Scraper:
             return self.get_tickets_information()
         except Exception as e:
             print(e)
-        finally:
             self.driver.close()
+            self.driver = get_browser()
 
 
 class TripOptions:
