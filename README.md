@@ -1,7 +1,7 @@
-# FastAPI Template for Tucar
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) [![Linux](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg) [![PyPi license](https://badgen.net/pypi/license/pip/)](https://pypi.com/project/pip/)
+# Repositorio de Optrip
+- Basado en el Template de FastApi de Tucar
 
-## Main Env Variables
+## Variables de entorno
 ```
 DB_USERNAME=<DB username if it needs one>
 DB_PASSWORD=<DB password if it needs one>
@@ -12,14 +12,7 @@ DEBUG_MODE=<If debug or not>
 LOG_LEVEL=<Log levels, mainly DEBUG or INFO>
 PY_ENV=<production or development, default development>
 ```
-Place the `.env` file in the root of this directory.
+`.env` en root de este directorio.
 
-## Run docker on local machine
-1. Run `docker-compose up`
-2. Enjoy!
-
-## Recomendations
-
-- Read Pydantic, Beanie, FastAPI and Motor.  
-- For any change, please request va pull request.  
-- Install Mongo Compass.  
+## En local
+1. `docker-compose up`
