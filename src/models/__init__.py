@@ -1,9 +1,12 @@
 from uuid import uuid4
-from pydantic import Field
+from pydantic import BaseModel, Field, validator
 from pydantic.utils import deep_update
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import List
+from bson.objectid import ObjectId
 from beanie import Document, Insert, Replace, before_event
 from src.helpers.dates import datetime_current, convert_datetime_to_iso_8601
+from functools import reduce
 
 
 class Main(Document):
@@ -39,7 +42,56 @@ class Main(Document):
     class Config:
         json_encoders = {
             datetime: convert_datetime_to_iso_8601,
+            ObjectId: str,
         }
 
     class Settings:
         use_revision = False
+
+class Company(BaseModel):
+    id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
+    name: str
+    category: str
+
+    @validator('category')
+    def category_match(cls, value):
+        if not value in ['flight', 'bus']:
+            raise ValueError('category must be in [flight, bus]')
+        return value
+    
+class City(BaseModel):
+    id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
+    name: str
+    iata_code: str
+
+class RouteLeg(Main):
+    id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
+    origin: City
+    destination: City
+    departure: datetime
+    arrival: datetime
+    travel_time: timedelta
+    price: int
+    company: Company
+
+    @before_event(Insert)
+    def parse_travel_time(self):
+        # Travel Time should be passed as "%H:%M:%S". Assumption: Travel_time <= 24 hrs.
+        time = datetime.strptime(self.travel_time,"%H:%M:%S")
+        self.travel_time = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
+
+class Route(Main):
+    id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
+    legs: List[RouteLeg]
+
+    def getTotalPrice(self):
+        return reduce(lambda a, b: a.price + b.price, self.legs)
+    
+    def getTotalTravelTime(self):
+        return reduce(lambda a, b: a.travel_time + b.travel_time, self.legs)
+
+    def getDeparture(self):
+        return self.legs[0].departure if self.legs else None
+    
+    def getArrival(self):
+        return self.legs[-1].arrival if self.legs else None
