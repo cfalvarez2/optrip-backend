@@ -15,6 +15,18 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+  
+  scraper:
+    build: 
+      context: ./scraper/
+      dockerfile: Dockerfile.scraper
+    container_name: "scraper"
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    volumes:
+      - ./scraper/:/code
 
   web:
     build: .
