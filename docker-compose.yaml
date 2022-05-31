@@ -9,20 +9,22 @@ services:
       - mongodb:/data/db
     networks:
       - app-network
-    healthcheck:
-      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo --quiet | grep 1
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+    # healthcheck:
+    #   test: echo 'db.runCommand({serverStatus:1}).ok' | mongo --quiet | grep 1
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 10s
   
   scraper:
     build: 
       context: ./scraper/
-      dockerfile: Dockerfile.scraper
+      dockerfile: Dockerfile
     container_name: "scraper"
     ports:
       - "3000:3000"
+    networks:
+      - app-network
     env_file:
       - ./.env
     volumes:
@@ -32,8 +34,8 @@ services:
     build: .
     container_name: "template-fastapi"
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+        # condition: service_healthy
     env_file:
       - ./.env
     networks:

@@ -3,7 +3,6 @@ from latam_scraper import LatamDate, LatamScraper
 from scraper import TripOptions
 import os
 
-print(os.environ['GH_TOKEN'])
 
 LATAM_SCRAPER = LatamScraper()
 

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Request, status, Body, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+import requests
 
 from typing import List, Union
 from bson import json_util
@@ -209,3 +210,16 @@ async def delete_company(id: str):
     if delete_result.deleted_count == 1:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
     raise HTTPException(status_code=404, detail=f"Company {id} not found")
+
+
+### Flights ###
+
+@index.get("/flights", response_description="List all flights")
+async def list_flights(request: Request):
+    data_json = await request.json()
+    get_flights_response = requests.get(
+        "http://scraper:3000/flights", 
+        headers = {'content-type': 'application/json'},
+        data=json.dumps(data_json))
+    print(get_flights_response)
+    return json.loads(get_flights_response.content.decode('utf-8'))
