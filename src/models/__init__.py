@@ -62,6 +62,7 @@ class Company(BaseModel):
 class City(BaseModel):
     id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
     name: str
+    iata_code: str
 
 class RouteLeg(Main):
     id: str = Field(default_factory=uuid4, alias="_id", unique=True, pk=True)
