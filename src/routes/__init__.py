@@ -214,7 +214,7 @@ async def delete_company(id: str):
 
 ### Flights ###
 
-@index.get("/flights", response_description="List all flights")
+@index.post("/flights", response_description="List all flights")
 async def list_flights(request: Request):
     data_json = await request.json()
     get_flights_response = requests.get(
