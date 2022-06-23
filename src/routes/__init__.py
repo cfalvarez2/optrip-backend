@@ -218,8 +218,20 @@ async def delete_company(id: str):
 async def list_flights(request: Request):
     data_json = await request.json()
     get_flights_response = requests.get(
-        "http://scraper:3000/flights", 
+        "http://latam_scraper:3000/flights", 
         headers = {'content-type': 'application/json'},
         data=json.dumps(data_json))
     print(get_flights_response)
     return json.loads(get_flights_response.content.decode('utf-8'))
+
+### Bus Trips ###
+
+@index.post("/bus_trips", response_description="List all bus trips")
+async def list_bus_trips(request: Request):
+    data_json = await request.json()
+    get_bus_trips_response = requests.get(
+        "http://turbus_scraper:6000/bus_trips", 
+        headers = {'content-type': 'application/json'},
+        data=json.dumps(data_json))
+    print(get_bus_trips_response)
+    return json.loads(get_bus_trips_response.content.decode('utf-8'))

@@ -16,11 +16,11 @@ services:
     #   retries: 3
     #   start_period: 10s
   
-  scraper:
+  latam_scraper:
     build: 
-      context: ./scraper/
+      context: ./scrapers/latam_scraper/
       dockerfile: Dockerfile
-    container_name: "scraper"
+    container_name: "latam_scraper"
     ports:
       - "3000:3000"
     networks:
@@ -28,7 +28,21 @@ services:
     env_file:
       - ./.env
     volumes:
-      - ./scraper/:/code
+      - ./scrapers/latam_scraper/:/code
+
+  turbus_scraper:
+    build: 
+      context: ./scrapers/turbus_scraper/
+      dockerfile: Dockerfile
+    container_name: "turbus_scraper"
+    ports:
+      - "6000:6000"
+    networks:
+      - app-network
+    env_file:
+      - ./.env
+    volumes:
+      - ./scrapers/turbus_scraper/:/code
 
   web:
     build: .
