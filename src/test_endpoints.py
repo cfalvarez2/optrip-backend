@@ -71,22 +71,20 @@ def test_get_flights(mocker, client):
     mocker.patch(
         'app.get_flights_response',
         return_value=ResponseMock(json.dumps({
-            "bus_trips": [
+            "flights": [
                 {"cost":16100,"departure_time":"06:25","duration":420},
                 {"cost":23100,"departure_time":"06:25","duration":420},
                 {"cost":14100,"departure_time":"07:10","duration":415}
             ],
-            "departure_date": "23/06/2022",
             "destination":"CCP",
             "origin":"SCL",
-            "return_date":"26/06/2022"
+            "date":"26/06/2022"
         }))
     )
     test_data = {
         "origin": "SCL",
         "destination": "CCP",
-        "departure_date": "23/06/2022",
-        "return_date": "26/06/2022"
+        "date": "26/06/2022"
     }
     response = client.post("/flights", json=test_data)
     assert response.status_code == 200
@@ -96,8 +94,7 @@ def test_get_flights(mocker, client):
             {"cost":23100,"departure_time":"06:25","duration":420},
             {"cost":14100,"departure_time":"07:10","duration":415}
         ],
-        "departure_date": "23/06/2022",
+        "date": "26/06/2022",
         "destination":"CCP",
         "origin":"SCL",
-        "return_date":"26/06/2022"
     }
