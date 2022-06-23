@@ -1,13 +1,14 @@
 from flask import Flask, jsonify, request
+
 from turbus_scraper import TurbusDate, TurbusScraper
 from scraper import TripOptions
-import os
 
 
 TURBUS_SCRAPER = TurbusScraper()
 
 app = Flask(__name__)
 
+app.config['JSON_AS_ASCII'] = False
 
 @app.route('/bus_trips', methods=['GET'])
 def get_bus_trips():
@@ -27,7 +28,7 @@ def get_bus_trips():
     options = TripOptions(origin, destination, turbus_departure_date, turbus_return_date)
 
     bus_trips = TURBUS_SCRAPER.scrape(options)
-    
+
     return jsonify({
         "origin": origin,
         "destination": destination,

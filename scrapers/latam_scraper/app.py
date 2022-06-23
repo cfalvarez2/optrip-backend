@@ -1,13 +1,14 @@
 from flask import Flask, jsonify, request
+
 from latam_scraper import LatamDate, LatamScraper
 from scraper import TripOptions
-import os
 
 
 LATAM_SCRAPER = LatamScraper()
 
 app = Flask(__name__)
 
+app.config['JSON_AS_ASCII'] = False
 
 @app.route('/flights', methods=['GET'])
 def get_flights():
