@@ -4,17 +4,9 @@ import json
 
 from app import app as src_app
 
-
-class DecodableMock:
-    def __init__(self, content):
-        self.content = content
-
-    def decode(self, encoding):
-        return self.content
-
 class ResponseMock:
     def __init__(self, content):
-        self.content = DecodableMock(content)
+        self.content = content
 
 @pytest.fixture()
 def app():
@@ -35,7 +27,7 @@ def runner(app):
 def test_get_bus_trips(mocker, client):
     mocker.patch(
         'app.get_bus_trips_response',
-        return_value=ResponseMock(json.dumps({
+        return_value=ResponseMock({
             "bus_trips": [
                 {"cost":16100,"departure_time":"06:25","duration":420},
                 {"cost":23100,"departure_time":"06:25","duration":420},
@@ -45,7 +37,7 @@ def test_get_bus_trips(mocker, client):
             "destination":"Concepción",
             "origin":"Santiago",
             "return_date":"26/06/2022"
-        }))
+        })
     )
     test_data = {
         "origin": "Santiago",
@@ -70,7 +62,7 @@ def test_get_bus_trips(mocker, client):
 def test_get_flights(mocker, client):
     mocker.patch(
         'app.get_flights_response',
-        return_value=ResponseMock(json.dumps({
+        return_value=ResponseMock({
             "flights": [
                 {"cost":16100,"departure_time":"06:25","duration":420},
                 {"cost":23100,"departure_time":"06:25","duration":420},
@@ -79,7 +71,7 @@ def test_get_flights(mocker, client):
             "destination":"CCP",
             "origin":"SCL",
             "date":"26/06/2022"
-        }))
+        })
     )
     test_data = {
         "origin": "SCL",
