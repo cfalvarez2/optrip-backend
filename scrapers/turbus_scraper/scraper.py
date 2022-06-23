@@ -47,7 +47,7 @@ class Scraper:
         except Exception as e:
             print(e)
             self.driver.close()
-            # self.driver = get_browser()
+            self.driver = get_browser()
 
 
 class Date:
