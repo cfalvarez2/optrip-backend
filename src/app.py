@@ -20,7 +20,7 @@ def get_flights_response(data_json):
     return requests.get(
         "http://latam_scraper:3000/flights", 
         headers = {'content-type': 'application/json'},
-        data=json.dumps(data_json))
+        data=json.dumps(data_json, ensure_ascii=False))
 
 
 ### Bus Trips ###
@@ -35,7 +35,7 @@ def get_bus_trips_response(data_json):
     return requests.get(
         "http://turbus_scraper:6000/bus_trips", 
         headers = {'content-type': 'application/json'},
-        data=json.dumps(data_json))
+        data=json.dumps(data_json, ensure_ascii=False))
 
 
 if __name__ == '__main__':
