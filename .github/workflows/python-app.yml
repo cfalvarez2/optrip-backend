@@ -26,6 +26,10 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+    - name: Setup Firefox
+      uses: browser-actions/setup-firefox@v0.0.0
+      with:
+        firefox-version: latest-esr
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
