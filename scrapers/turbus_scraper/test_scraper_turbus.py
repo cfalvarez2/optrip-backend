@@ -1,6 +1,6 @@
 import pytest
 
-from app import app as turbus_app
+from app_turbus import app as turbus_app
 
 
 @pytest.fixture()

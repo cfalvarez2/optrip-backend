@@ -1,5 +1,5 @@
 from time import sleep
-from scraper import Scraper, Date, get_browser
+from utils_turbus import Scraper, Date, get_browser
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC

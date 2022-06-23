@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
-from turbus_scraper import TurbusDate, TurbusScraper
-from scraper import TripOptions
+from scraper_turbus import TurbusDate, TurbusScraper
+from utils_turbus import TripOptions
 
 
 TURBUS_SCRAPER = TurbusScraper()
