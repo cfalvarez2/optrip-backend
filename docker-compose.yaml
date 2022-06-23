@@ -1,21 +1,5 @@
 version: "3"
 services:
-  db:
-    container_name: "mongo"
-    image: "mongo"
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb:/data/db
-    networks:
-      - app-network
-    # healthcheck:
-    #   test: echo 'db.runCommand({serverStatus:1}).ok' | mongo --quiet | grep 1
-    #   interval: 10s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 10s
-  
   latam_scraper:
     build: 
       context: ./scrapers/latam_scraper/
@@ -45,23 +29,18 @@ services:
       - ./scrapers/turbus_scraper/:/code
 
   web:
-    build: .
-    container_name: "template-fastapi"
-    depends_on:
-      - db
-        # condition: service_healthy
-    env_file:
-      - ./.env
-    networks:
-      - app-network
+    build: 
+      context: ./src/
+      dockerfile: Dockerfile
+    container_name: "web"
     ports:
       - "5000:5000"
+    networks:
+      - app-network
+    env_file:
+      - ./.env
     volumes:
-      - .:/app
-    restart: always
-
-volumes:
-    mongodb:
+      - ./src/:/code
 
 networks:
   app-network:
