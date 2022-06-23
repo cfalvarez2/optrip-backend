@@ -1,6 +1,6 @@
 import pytest
 
-from app import app as latam_app
+from app_latam import app as latam_app
 
 
 @pytest.fixture()

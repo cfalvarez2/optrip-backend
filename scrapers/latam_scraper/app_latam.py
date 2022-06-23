@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
-from latam_scraper import LatamDate, LatamScraper
-from scraper import TripOptions
+from scraper_latam import LatamDate, LatamScraper
+from utils_latam import TripOptions
 
 
 LATAM_SCRAPER = LatamScraper()
