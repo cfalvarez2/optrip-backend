@@ -62,6 +62,31 @@ def test_get_bus_trips(mocker, client):
         "date":"26/06/2022"
     }
 
+def test_get_bus_trips_passed_date(mocker, client):
+
+    test_data = {
+        "origin": "Santiago",
+        "destination": "Concepción",
+        "date": "20/06/2022"
+    }
+
+    response = client.post("/bus_trips", json=test_data)
+
+    assert response.status_code == 400
+
+def test_get_bus_trips_invalid_date_format(mocker, client):
+
+    test_data = {
+        "origin": "Santiago",
+        "destination": "Concepción",
+        "date": "26-06/2022"
+    }
+
+    response = client.post("/bus_trips", json=test_data)
+
+    assert response.status_code == 400
+
+
 
 def test_get_flights(mocker, client):
     mocker.patch(
@@ -96,3 +121,24 @@ def test_get_flights(mocker, client):
         "destination":"CCP",
         "origin":"SCL",
     }
+
+def test_get_flights_passed_date(mocker, client):
+    test_data = {
+        "origin": "SCL",
+        "destination": "CCP",
+        "date": "23/06/2022"
+    }
+
+    response = client.post("/flights", json=test_data)
+    assert response.status_code == 400
+
+def test_get_flights_invalid_date_format(mocker, client):
+    test_data = {
+        "origin": "SCL",
+        "destination": "CCP",
+        "date": "26-06/2022"
+    }
+
+    response = client.post("/flights", json=test_data)
+    assert response.status_code == 400
+
