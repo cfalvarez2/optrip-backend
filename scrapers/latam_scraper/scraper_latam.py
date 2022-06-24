@@ -1,4 +1,4 @@
-from scraper import Scraper, get_browser
+from utils_latam import Scraper, get_browser
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
