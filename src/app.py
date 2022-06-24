@@ -1,4 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from datetime import datetime
 
 import requests
 
@@ -11,8 +12,21 @@ app = Flask(__name__)
 @app.route("/flights", methods=['POST'])
 async def list_flights():
     data_json = request.json
-    flights_response = get_flights_response(data_json)
-    return flights_response.content
+    date = data_json["date"]
+    try:
+        fecha = datetime.strptime(date, "%d/%m/%Y") # DD/MM/YYYY
+        if fecha.date() >= datetime.now().date():
+            flights_response = get_flights_response(data_json)
+            return flights_response.content
+        else:
+            return jsonify({
+        "error": "invalid date"
+    }), 400
+    except ValueError:
+        return jsonify({
+        "error": "invalid date format",
+    }), 400
+    
 
 def get_flights_response(data_json):
     return requests.get(
@@ -26,8 +40,21 @@ def get_flights_response(data_json):
 @app.route("/bus_trips", methods=['POST'])
 async def list_bus_trips():
     data_json = request.json
-    bus_trips_response = get_bus_trips_response(data_json)
-    return bus_trips_response.content
+    date = data_json["date"]
+    try:
+        fecha = datetime.strptime(date, "%d/%m/%Y") # DD/MM/YYYY
+        if fecha.date() >= datetime.now().date():
+            bus_trips_response = get_bus_trips_response(data_json)
+            return bus_trips_response.content
+        else:
+            return jsonify({
+        "error": "invalid date"
+    }), 400
+    except ValueError:
+        return jsonify({
+        "error": "invalid date format",
+    }), 400
+    
 
 def get_bus_trips_response(data_json):
     return requests.get(
