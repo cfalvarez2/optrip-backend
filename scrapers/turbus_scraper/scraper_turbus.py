@@ -2,6 +2,7 @@ from utils_turbus import Scraper, Date, get_browser
 from selenium.webdriver.common.by import By
 
 from datetime import datetime
+from time import sleep
 
 
 class TurbusDate(Date):
@@ -19,6 +20,9 @@ class TurbusScraper(Scraper):
 
     def navigate_to_tickets_page(self, options):
         self.driver.get(self.URL)
+
+        print(self.driver)
+        sleep(10)
 
         self.select_origin(options.origin)
         self.select_destination(options.destination)

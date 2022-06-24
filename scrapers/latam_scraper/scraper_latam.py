@@ -50,6 +50,9 @@ class LatamScraper(Scraper):
     def navigate_to_tickets_page(self, options):
         self.driver.get(self.URL)
 
+        print(self.driver)
+        sleep(10)
+
         self.select_one_way_trip_type()
 
         self.select_origin(options.origin)
