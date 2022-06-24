@@ -25,7 +25,7 @@ def test_get_flights(client):
     test_data = {
         "origin":"SCL",
         "destination":"CCP",
-        "date":"26/06/2022"
+        "date":"05/07/2022"
     }
 
     response = client.get("/flights", json=test_data)
@@ -33,4 +33,4 @@ def test_get_flights(client):
     assert isinstance(response.json["flights"], list)
     assert response.json["origin"] == "SCL"
     assert response.json["destination"] == "CCP"
-    assert response.json["date"] == "26/06/2022"
+    assert response.json["date"] == "05/07/2022"
