@@ -2,3 +2,4 @@ Flask[async]
 requests
 pytest
 pytest-mock
+flask-cors
