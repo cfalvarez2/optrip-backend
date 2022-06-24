@@ -15,7 +15,7 @@ def get_flights():
 
     data = request.json
 
-    origin = data["origin"]
+    origin = data["origin"]  # Código IATA ej: SCL
     destination = data["destination"]
     date = data["date"] # DD/MM/YYYY
 
