@@ -25,8 +25,8 @@ def runner(app):
 def test_get_bus_trips(client):
     test_data = {
         "origin": "Santiago",
-        "destination": "Concepción",
-        "date": "23/06/2022",
+        "destination": "Calama",
+        "date": "28/07/2022",
     }
 
     response = client.get("/bus_trips", json=test_data)
@@ -34,5 +34,5 @@ def test_get_bus_trips(client):
     assert response.status_code == 200
     assert isinstance(response.json["bus_trips"], list)
     assert response.json["origin"] == "Santiago"
-    assert response.json["destination"] == "Concepción"
-    assert response.json["date"] == "23/06/2022"
+    assert response.json["destination"] == "Calama"
+    assert response.json["date"] == "28/07/2022"

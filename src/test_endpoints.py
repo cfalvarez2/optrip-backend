@@ -37,14 +37,14 @@ def test_get_bus_trips(mocker, client):
                 {"cost":14100,"departure_time":"07:10","duration":415}
             ],
             "origin":"Santiago",
-            "destination":"Concepción",
+            "destination":"Calama",
             "date":"26/06/2022"
         })
     )
 
     test_data = {
         "origin": "Santiago",
-        "destination": "Concepción",
+        "destination": "Calama",
         "date": "26/06/2022"
     }
 
@@ -58,7 +58,7 @@ def test_get_bus_trips(mocker, client):
             {"cost":14100,"departure_time":"07:10","duration":415}
         ],
         "origin":"Santiago",
-        "destination":"Concepción",
+        "destination":"Calama",
         "date":"26/06/2022"
     }
 
