@@ -8,3 +8,6 @@ Flask-based app to collect flights and bus tickets using Selenium web-scraping.
 GH_TOKEN=<GitHub token for downloading GeckoDriver>
 ``` 
 2. Run `docker-compose up`
+
+## Documentation
+https://documenter.getpostman.com/view/9702404/UzBqo5VX
