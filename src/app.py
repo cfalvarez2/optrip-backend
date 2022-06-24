@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 from datetime import datetime
-
+from flask_cors import CORS
 import requests
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 ### Flights ###
