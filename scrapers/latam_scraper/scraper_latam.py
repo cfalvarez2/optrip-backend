@@ -1,18 +1,16 @@
-from utils_latam import Scraper, get_browser
+from utils_latam import Scraper, get_browser, Date
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
+import re
 from time import sleep
+from datetime import datetime
 
 
-class LatamDate:
+class LatamDate(Date):
     def __init__(self, day, month, year):
-        self.day = day
-        self.month = month
-        self.year = year
+        super().__init__(day, month, year)
 
 
     def month_mapping(self, month_num):
@@ -32,6 +30,10 @@ class LatamDate:
         ][month_num - 1]
 
 
+    def date_string(self):
+        return f"{str(self.day).zfill(2)}-{str(self.month).zfill(2)}-{self.year}"
+
+
     def __str__(self):
         month_name = self.month_mapping(self.month)
         return f"{self.day} de {month_name} de {self.year}"
@@ -45,113 +47,148 @@ class LatamScraper(Scraper):
         self.driver = get_browser()
 
 
-    def get_trip_type_button(self):
-        return self.driver.find_element(
-            By.XPATH,
-            "//button[@id='btnTripTypeCTA']"
-        )
-
-
-    def select_trip_type(self, type_):
-        num_selector = int(type_ == 'round')
-
-        button = self.get_trip_type_button()
-        button.click()
-
-        sleep(1)
-
-        selector = self.driver.find_element(
-            By.ID, 
-            f"itemTripType_{num_selector}"
-        )
-
-        selector.click()
-
-
-    def select_origin(self, origin):
-        origin_input = self.driver.find_element(
-            By.XPATH,
-            "//input[@id='txtInputOrigin_field']"
-        )
-
-        origin_input.send_keys(origin)
-
-        sleep(1)
-
-        origin_selection = self.driver.find_element(By.ID, "lstItem_0")
-        origin_selection.click()
-
-
-    def select_destination(self, destination):
-        destination_input = self.driver.find_element(
-            By.XPATH,
-            "//input[@id='txtInputDestination_field']"
-        )
-
-        destination_input.send_keys(destination)
-
-        sleep(1)
-
-        destination_selection = self.driver.find_element(By.ID, "lstItem_0")
-        destination_selection.click()
-
-
-    def select_departure_date(self, date):
-        departure_date_selection_button = self.driver.find_element(
-            By.XPATH,
-            "//input[@id='departureDate']"
-        )
-
-        departure_date_selection_button.click()
-
-        sleep(1)
-
-        date_selection = self.driver.find_element(
-            By.XPATH,
-            f"//td[contains(@aria-label, '{date}')]"
-        )
-
-        date_selection.click()
-
-
-    def select_return_date(self, date):
-        pass
-
-
-    def click_search_button(self):
-        search_button = self.driver.find_element(
-            By.XPATH, 
-            "//button[@id='btnSearchCTA']"
-        )
-
-        search_button.click()
-
-
     def navigate_to_tickets_page(self, options):
         self.driver.get(self.URL)
 
-        self.select_trip_type(options.type_)
+        self.select_one_way_trip_type()
 
         self.select_origin(options.origin)
         self.select_destination(options.destination)
 
-        self.select_departure_date(options.departure_date)
-        if options.return_date:
-            self.select_return_date(options.return_date)
+        self.select_date(options.departure_date)
 
         self.click_search_button()
 
-        WebDriverWait(self.driver, 35).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//ol[contains(@aria-label, 'Vuelos disponibles')]")
-            )
-        )
+
+    def get_tickets_information(self):
+        flight_elements_list = self.get_flight_elements_list()
+        cards = self.get_flight_cards_list(flight_elements_list)
+
+        flights_info = []
+
+        for card in cards:
+            try:
+                flight_info = self.get_flight_info(card)
+                flights_info.append(flight_info)
+
+            except NoSuchElementException:
+                pass
+
+        return flights_info
+
+
+    def select_one_way_trip_type(self):
+        print("Selecting one way trip type...")
+
+        xpath = ".//button[@id='btnTripTypeCTA']"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        button = self.driver.find_element(By.XPATH, xpath)
+        button.click()
+
+        print("Found one way button...")
+
+        xpath = ".//li[@id='itemTripType_0']"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        selector = self.driver.find_element(By.XPATH, xpath)
+        selector.click()
+
+
+    def select_origin(self, origin):
+        xpath = ".//input[@id='txtInputOrigin_field']"
+        self.wait_for_element_to_be_present(xpath)
+
+        origin_input = self.driver.find_element(By.XPATH, xpath)
+        origin_input.send_keys(origin)
+
+        sleep(1)
+
+        xpath = ".//li[@id='lstItem_0']"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        origin_selection = self.driver.find_element(By.XPATH, xpath)
+        origin_selection.click()
+
+
+    def select_destination(self, destination):
+        xpath = ".//input[@id='txtInputDestination_field']"
+        self.wait_for_element_to_be_present(xpath)
+
+        destination_input = self.driver.find_element(By.XPATH, xpath)
+        destination_input.send_keys(destination)
+
+        sleep(1)
+
+        xpath = ".//li[@id='lstItem_0']"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        destination_selection = self.driver.find_element(By.XPATH, xpath)
+        destination_selection.click()
+
+
+    def select_date(self, date):
+        xpath = ".//input[@id='departureDate']"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        selection_button = self.driver.find_element(By.XPATH, xpath)
+        selection_button.click()
+
+        self.advance_to_relevant_month(date)
+
+        # sleep(1)
+
+        xpath = f".//td[contains(@aria-label, '{date}')]"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        date_selection = self.driver.find_element(By.XPATH, xpath)
+        date_selection.click()
+
+
+    def advance_to_relevant_month(self, date):
+        advs = self.get_necessary_advances(date)
+        self.advance_months(advs)
+
+
+    def advance_months(self, num):
+        xpath = ".//div[contains(@aria-label, 'Avanza al mes de')]"
+        self.wait_for_element_to_be_present(xpath)
+
+        next_month_arrow = self.driver.find_element(By.XPATH, xpath)
+
+        for _ in range(num):
+            next_month_arrow.click()
+
+
+    def get_necessary_advances(self, date):
+        today = self.today()
+        return self.get_months_difference(today, date.date_string())
+
+
+    def today(self):
+        return datetime.today().strftime("%d-%m-%Y")
+
+
+    def get_months_difference(self, date1, date2):  # date1 <= date2
+        _, month1, year1 = date1.split("-")
+        _, month2, year2 = date2.split("-")
+
+        return 12 * (int(year2) - int(year1)) + int(month2) - int(month1)
+
+
+    def click_search_button(self):
+        xpath = ".//button[@id='btnSearchCTA']"
+        self.wait_for_element_to_be_clickable(xpath)
+
+        button = self.driver.find_element(By.XPATH, xpath)
+        button.click()
 
 
     def get_flight_elements_list(self):
-        return self.driver.find_element(
-            By.XPATH, "//ol[contains(@aria-label, 'Vuelos disponibles')]"
-        )
+        xpath = ".//ol[contains(@aria-label, 'Vuelos disponibles')]"
+        self.wait_for_element_to_be_present(xpath)
+
+        return self.driver.find_element(By.XPATH, xpath)
 
 
     def get_flight_cards_list(self, flight_elements_list):
@@ -182,7 +219,7 @@ class LatamScraper(Scraper):
 
 
     def cost_formatting(self, cost_string):
-        return int(cost_string[4:].replace(".", ""))
+        return int(re.sub("[^0-9]", "", cost_string))
 
 
     def get_flight_cost(self, card):
@@ -204,20 +241,3 @@ class LatamScraper(Scraper):
             'duration': duration,
             'cost': cost
         }
-
-
-    def get_tickets_information(self):
-        flight_elements_list = self.get_flight_elements_list()
-        cards = self.get_flight_cards_list(flight_elements_list)
-
-        flights_info = []
-
-        for card in cards:
-            try:
-                flight_info = self.get_flight_info(card)
-                flights_info.append(flight_info)
-
-            except NoSuchElementException:
-                pass
-
-        return flights_info
