@@ -8,4 +8,4 @@ RUN apt-get update                             \
     ca-certificates curl firefox-esr           \
  && rm -fr /var/lib/apt/lists/*                \
  && apt-get purge -y ca-certificates curl
-CMD ["python", "turbus_app.py"]
+CMD ["python", "app_turbus.py"]
