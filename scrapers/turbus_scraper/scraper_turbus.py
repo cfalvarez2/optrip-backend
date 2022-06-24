@@ -21,8 +21,7 @@ class TurbusScraper(Scraper):
     def navigate_to_tickets_page(self, options):
         self.driver.get(self.URL)
 
-        print(self.driver)
-        sleep(10)
+        print(f"Title: {self.driver.title}")
 
         self.select_origin(options.origin)
         self.select_destination(options.destination)
