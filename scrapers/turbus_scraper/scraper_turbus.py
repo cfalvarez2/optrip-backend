@@ -29,6 +29,9 @@ class TurbusScraper(Scraper):
 
 
     def get_tickets_information(self):
+        xpath = ".//h2[contains(text(), 'SELECCIONA TU PASAJE DE IDA')]"
+        self.wait_for_element_to_be_present(xpath)
+
         return [
             self.get_ticket_info(ticket)
             for ticket in self.get_ticket_elements_list()
