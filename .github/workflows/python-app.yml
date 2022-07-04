@@ -28,6 +28,7 @@ jobs:
         python-version: "3.10"
     - name: Install dependencies
       run: |
+        apt-get install xvfb firefox
         python -m pip install --upgrade pip
         pip install flake8 pytest
         pip install -r ./src/requirements.txt
@@ -40,7 +41,5 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
-      uses: GabrielBB/xvfb-action@v1
-      with:
-        run: |
-          pytest
+      run: |
+        xvfb-run pytest
