@@ -28,7 +28,7 @@ jobs:
         python-version: "3.10"
     - name: Install dependencies
       run: |
-        apt-get install xvfb firefox
+        sudo apt-get install xvfb firefox
         python -m pip install --upgrade pip
         pip install flake8 pytest
         pip install -r ./src/requirements.txt
